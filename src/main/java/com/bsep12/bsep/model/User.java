@@ -26,6 +26,9 @@ public class User implements UserDetails {
 	@Column(nullable = false)
 	private boolean enabled;
 
+	@Column
+	private String role;
+
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "user_authority",
 			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
@@ -65,6 +68,14 @@ public class User implements UserDetails {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-INSERT INTO USERS (username, password, enabled) VALUES ('admin', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true);
+INSERT INTO USERS (username, password, enabled, role) VALUES ('admin', '$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra', true, 'ADMIN');
 
 INSERT INTO AUTHORITY (name) VALUES ('ROLE_ADMIN');
 

@@ -33,13 +33,14 @@ public class TokenUtils {
 
 	private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
-	public String generateToken(String username) {
+	public String generateToken(String username, String role) {
 		return Jwts.builder()
 				.setIssuer(APP_NAME)
 				.setSubject(username)
 				.setAudience(generateAudience())
 				.setIssuedAt(new Date())
 				.setExpiration(generateExpirationDate())
+				.claim("role", role)
 				.signWith(SIGNATURE_ALGORITHM, SECRET).compact();
 	}
 

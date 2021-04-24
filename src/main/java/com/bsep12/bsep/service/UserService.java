@@ -44,6 +44,7 @@ public class UserService implements UserDetailsService {
 		//TODO add salt
 		u.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 		u.setEnabled(false);
+		u.setRole("USER");
 
 		List<Authority> auth = authService.findByName("ROLE_USER");
 		u.setAuthorities(auth);
