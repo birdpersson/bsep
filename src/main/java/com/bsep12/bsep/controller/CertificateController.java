@@ -34,7 +34,7 @@ public class CertificateController {
 	}
 
 	@GetMapping("/get_certificates")
-	@PreAuthorize("hasAuthority('READ')")
+	@PreAuthorize("hasRole('USER')")
 	public ResponseEntity getAll() {
 		return new ResponseEntity("Everything is fine", HttpStatus.OK);
 	}

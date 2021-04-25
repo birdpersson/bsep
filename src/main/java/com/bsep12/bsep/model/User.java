@@ -29,6 +29,9 @@ public class User implements UserDetails {
 	private boolean enabled;
 
 	@Column
+	private String token;
+
+	@Column
 	private String role;
 
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -84,6 +87,14 @@ public class User implements UserDetails {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	public String getRole() {
