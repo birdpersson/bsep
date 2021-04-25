@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Authority implements GrantedAuthority {
@@ -14,6 +15,12 @@ public class Authority implements GrantedAuthority {
 
 	@Column
 	private String name;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "authority_permission",
+			joinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
+	private List<Permission> permissions;
 
 	@JsonIgnore
 	public Long getId() {
@@ -38,4 +45,11 @@ public class Authority implements GrantedAuthority {
 		return name;
 	}
 
+	public List<Permission> getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(List<Permission> permissions) {
+		this.permissions = permissions;
+	}
 }
