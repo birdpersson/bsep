@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -30,6 +31,9 @@ public class User implements UserDetails {
 
 	@Column
 	private String token;
+
+	@Column
+	private Date expiry;
 
 	@Column
 	private String role;
@@ -95,6 +99,14 @@ public class User implements UserDetails {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public Date getExpiry() {
+		return expiry;
+	}
+
+	public void setExpiry(Date expiry) {
+		this.expiry = expiry;
 	}
 
 	public String getRole() {
