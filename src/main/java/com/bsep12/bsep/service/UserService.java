@@ -6,6 +6,9 @@ import com.bsep12.bsep.model.User;
 import com.bsep12.bsep.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -61,11 +64,16 @@ public class UserService implements UserDetailsService {
 		return u;
 	}
 
-	public User enable(User user) {
-		user.setEnabled(true);
-		user.setToken(null);
-		user.setExpiry(null);
+	public User change(User user) {
 		userRepository.save(user);
 		return user;
 	}
+
+	public User changePassword(User user) {
+
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		userRepository.save(user);
+		return user;
+	}
+
 }

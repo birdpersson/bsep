@@ -1,5 +1,7 @@
 package com.bsep12.bsep.controller;
 
+import com.bsep12.bsep.dto.EmailDTO;
+import com.bsep12.bsep.dto.RecoveryDTO;
 import com.bsep12.bsep.dto.UserDTO;
 import com.bsep12.bsep.model.User;
 import com.bsep12.bsep.model.UserTokenState;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -78,9 +81,44 @@ public class AuthenticationController {
 		if (existUser == null || existUser.getExpiry().getTime() < new Date().getTime())
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-		userService.enable(existUser);
+		existUser.setEnabled(true);
+		existUser.setToken(null);
+		existUser.setExpiry(null);
+		userService.change(existUser);
 
 		//TESTING ONLY
 		return new ResponseEntity<>(existUser, HttpStatus.CREATED);
 	}
+
+	@PostMapping("/forgot-password")
+	public ResponseEntity forgotPassword(@RequestBody EmailDTO emailDTO) {
+		User existUser = userService.findByUsername(emailDTO.getUsername());
+		if (existUser == null)
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+		existUser.setToken(UUID.randomUUID().toString());
+		existUser.setExpiry(new Date((new Date().getTime() + 300000)));
+		userService.change(existUser);
+		try {
+			emailService.sendMail2(existUser);
+		} catch (MailException e) {
+			e.printStackTrace();
+		}
+
+		return new ResponseEntity(HttpStatus.CREATED);
+	}
+
+	@PostMapping("/reset-password")
+	public ResponseEntity resetPassword(@RequestBody RecoveryDTO recoveryDTO) {
+		User existUser = userService.findByToken(recoveryDTO.getToken());
+		if (existUser == null || existUser.getExpiry().getTime() < new Date().getTime())
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+		existUser.setToken(null);
+		existUser.setExpiry(null);
+		userService.changePassword(existUser);
+
+		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
+
 }
