@@ -5,19 +5,18 @@ import com.bsep12.bsep.model.User;
 import com.bsep12.bsep.model.UserTokenState;
 import com.bsep12.bsep.security.TokenUtils;
 import com.bsep12.bsep.security.auth.JwtAuthenticationRequest;
+import com.bsep12.bsep.service.EmailService;
 import com.bsep12.bsep.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,6 +32,9 @@ public class AuthenticationController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private EmailService emailService;
 
 	@PostMapping("/login")
 	public ResponseEntity<UserTokenState> createAuthenticationToken(
@@ -60,8 +62,25 @@ public class AuthenticationController {
 			return new ResponseEntity<>(existUser, HttpStatus.CONFLICT);
 
 		User createdUser = userService.save(userDTO);
+		try {
+			emailService.sendMail(createdUser);
+		} catch (MailException e) {
+			e.printStackTrace();
+		}
 
 		return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
 	}
 
+	@GetMapping("/verify")
+	public ResponseEntity<User> verifyUser(@RequestParam("token") String token) {
+		User existUser = userService.findByToken(token);
+		if (existUser == null)
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+		existUser.setEnabled(true);
+		userService.change(existUser);
+
+		//TESTING ONLY
+		return new ResponseEntity<>(existUser, HttpStatus.CREATED);
+	}
 }
