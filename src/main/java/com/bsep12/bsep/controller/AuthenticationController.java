@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -74,11 +75,10 @@ public class AuthenticationController {
 	@GetMapping("/verify")
 	public ResponseEntity<User> verifyUser(@RequestParam("token") String token) {
 		User existUser = userService.findByToken(token);
-		if (existUser == null)
+		if (existUser == null || existUser.getExpiry().getTime() < new Date().getTime())
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-		existUser.setEnabled(true);
-		userService.change(existUser);
+		userService.enable(existUser);
 
 		//TESTING ONLY
 		return new ResponseEntity<>(existUser, HttpStatus.CREATED);

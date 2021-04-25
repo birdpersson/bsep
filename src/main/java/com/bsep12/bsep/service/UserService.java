@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,6 +51,7 @@ public class UserService implements UserDetailsService {
 		u.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 		u.setEnabled(false);
 		u.setToken(UUID.randomUUID().toString());
+		u.setExpiry(new Date((new Date().getTime() + 300000)));
 		u.setRole("USER");
 
 		List<Authority> auth = authService.findByName("ROLE_USER");
@@ -59,7 +61,10 @@ public class UserService implements UserDetailsService {
 		return u;
 	}
 
-	public User change(User user) {
+	public User enable(User user) {
+		user.setEnabled(true);
+		user.setToken(null);
+		user.setExpiry(null);
 		userRepository.save(user);
 		return user;
 	}
