@@ -33,9 +33,10 @@ public class CertificateController {
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
-	@GetMapping("/")
+	@GetMapping("/get_certificates")
+	@PreAuthorize("hasAuthority('READ')")
 	public ResponseEntity getAll() {
-		return ResponseEntity.ok(certificateService.getAll());
+		return new ResponseEntity("Everything is fine", HttpStatus.OK);
 	}
 
 	@GetMapping("/ca")
