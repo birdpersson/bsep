@@ -116,7 +116,7 @@ public class AuthenticationController {
 
 		existUser.setToken(null);
 		existUser.setExpiry(null);
-		userService.changePassword(existUser);
+		userService.changePassword(existUser, recoveryDTO.getPassword());
 
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}

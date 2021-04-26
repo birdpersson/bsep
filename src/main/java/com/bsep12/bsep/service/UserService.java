@@ -69,9 +69,9 @@ public class UserService implements UserDetailsService {
 		return user;
 	}
 
-	public User changePassword(User user) {
+	public User changePassword(User user, String newPassword) {
 
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		user.setPassword(passwordEncoder.encode(newPassword));
 		userRepository.save(user);
 		return user;
 	}

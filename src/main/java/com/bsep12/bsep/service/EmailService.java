@@ -24,7 +24,7 @@ public class EmailService {
 		mail.setTo(user.getUsername());
 		mail.setFrom(env.getProperty("spring.mail.username"));
 		mail.setSubject("Confirm registration to BSEP12");
-		mail.setText("http://localhost:8080/auth/verity?token=" + user.getToken());
+		mail.setText("http://localhost:8080/auth/verify?token=" + user.getToken());
 		javaMailSender.send(mail);
 	}
 
