@@ -33,10 +33,22 @@ public class CertificateController {
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
-	@GetMapping("/get_certificates")
+	@GetMapping("/test-user")
 	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity getAll() {
-		return new ResponseEntity("Everything is fine", HttpStatus.OK);
+	public ResponseEntity testUser() {
+		return new ResponseEntity("User is working", HttpStatus.OK);
+	}
+
+	@GetMapping("/test-admin")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity testAdmin() {
+		return new ResponseEntity("Admin is working", HttpStatus.OK);
+	}
+
+	@GetMapping("/test-create")
+	@PreAuthorize("hasAuthority('CREATE')")
+	public ResponseEntity testCreate() {
+		return new ResponseEntity("Create is working", HttpStatus.OK);
 	}
 
 	@GetMapping("/ca")
